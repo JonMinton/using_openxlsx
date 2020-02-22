@@ -188,7 +188,7 @@ summary {
 <div id="introduction-the-problem" class="section level1">
 <h1>Introduction: The problem</h1>
 <ul>
-<li>Markdown has <code>kable</code> etc
+<li>Markdown has <code>kable</code>/<code>kableExtra</code> etc
 <ul>
 <li>Renders nicely as HTML</li>
 <li>Doesn’t copy over to Excel /Word too easily</li>
@@ -208,7 +208,7 @@ summary {
 <li><a href="https://readxl.tidyverse.org/"><code>readxl</code></a>: Reading only</li>
 <li><a href="https://cran.r-project.org/web/packages/googlesheets/vignettes/basic-usage.html"><code>googlesheets</code></a>: We’re more wedded to M$ than Google
 <ul>
-<li>Sharepoint (aaagh!)</li>
+<li>Sharepoint :(</li>
 <li>Security concerns?</li>
 <li>Could then save/export to MS (but manual process)</li>
 <li>And I’ve not really used it!</li>
@@ -221,7 +221,7 @@ summary {
 <li>Java increasingly not supported</li>
 <li>IT permissions required</li>
 </ul></li>
-<li><a href="https://cran.r-project.org/web/packages/openxlsx/index.html"><code>openxslx</code></a>: <em>Not</em> Java dependent
+<li><a href="https://cran.r-project.org/web/packages/openxlsx/index.html"><code>openxlsx</code></a>: <em>Not</em> Java dependent
 <ul>
 <li>Read</li>
 <li>write</li>
@@ -230,7 +230,7 @@ summary {
 </ul>
 </div>
 <div id="basic-workflow-using-openxlsx-quickly" class="section level1">
-<h1>Basic workflow: Using <code>openxlsx</code> quickly</h1>
+<h1>Basic workflow: Using openxlsx quickly</h1>
 <p>From <a href="https://cran.r-project.org/web/packages/openxlsx/vignettes/Introduction.pdf">Online Introduction</a></p>
 <pre class="r"><code># Workbook with given name with worksheet containing iris
 write.xlsx(iris, file = &quot;writeXLSX1.xlsx&quot;) 
@@ -241,14 +241,14 @@ l &lt;- list(&quot;IRIS&quot; = iris, &quot;MTCARS&quot; = mtcars)
 write.xlsx(l, file = &quot;writeXLSX2.xlsx&quot;)</code></pre>
 </div>
 <div id="basic-workflow-using-openxlsx-properly" class="section level1">
-<h1>Basic workflow: Using <code>openxlsx</code> properly</h1>
+<h1>Basic workflow: Using openxlsx properly</h1>
 <p>Minimum of four stages</p>
 <ol style="list-style-type: decimal">
 <li><code>createworkbook()</code></li>
 <li><code>addWorksheet()</code></li>
 <li><code>WriteData()</code> or <code>writeDatatable()</code></li>
 <li><p><code>saveWorkbook()</code></p></li>
-<li><h1 id="createworkbook"><code>createWorkbook()</code></h1></li>
+<li><h1 id="createworkbook">createWorkbook()</h1></li>
 <li><code>createWorkbook()</code>: Create skeleton workbook
 <ul>
 <li>Just within Rstudio session</li>
@@ -259,7 +259,7 @@ write.xlsx(l, file = &quot;writeXLSX2.xlsx&quot;)</code></pre>
 <pre class="r"><code>wb &lt;- createWorkbook()</code></pre>
 </div>
 <div id="addworksheet" class="section level1">
-<h1>2. <code>addWorksheet()</code></h1>
+<h1>2. addWorksheet()</h1>
 <ol start="2" style="list-style-type: decimal">
 <li><code>addWorksheet(wb, [other arguments])</code>: Attaches a worksheet to the <code>wb</code> object
 <ul>
@@ -271,8 +271,8 @@ write.xlsx(l, file = &quot;writeXLSX2.xlsx&quot;)</code></pre>
 <pre class="r"><code>wb &lt;- createWorkbook()
 addWorksheet(wb, sheetName = &quot;my sheet name&quot;)</code></pre>
 </div>
-<div id="writedatawritedatatable" class="section level1">
-<h1>3. <code>writeData()</code>/<code>writeDatatable()</code></h1>
+<div id="writedata-writedatatable" class="section level1">
+<h1>3. writeData() / writeDatatable()</h1>
 <ol start="3" style="list-style-type: decimal">
 <li><code>writeData()</code> or <code>writeDatatable()</code>: Add data to worksheet in workbook.
 <ul>
@@ -293,7 +293,7 @@ writeData(wb, sheet = 1, x = mtcars)
 </ul>
 </div>
 <div id="saveworkbook" class="section level1">
-<h1>4. <code>saveWorkbook()</code></h1>
+<h1>4. saveWorkbook()</h1>
 <pre class="r"><code>wb &lt;- createWorkbook()
 addWorksheet(wb, sheetName = &quot;my sheet name&quot;)
 writeData(wb, sheet = 1, x = mtcars)
@@ -301,12 +301,153 @@ writeData(wb, sheet = 1, x = mtcars)
 saveWorkbook(wb, &quot;basics.xlsx&quot;)</code></pre>
 </div>
 <div id="saveworkbook-1" class="section level1">
-<h1>4. <code>saveWorkbook()</code></h1>
+<h1>4. saveWorkbook()</h1>
 <ul>
 <li>Add <code>overwrite=</code></li>
 </ul>
-<pre><code>Error in (function (filename = &quot;Rplot%03d.png&quot;, width = 480, height = 480,  : 
-  unable to start png() device</code></pre>
+<pre class="r"><code>wb &lt;- createWorkbook()
+addWorksheet(wb, sheetName = &quot;my sheet name&quot;)
+writeData(wb, sheet = 1, x = mtcars)
+# writeData(wb, sheet = &quot;my sheet name&quot;, x = mtcars)
+saveWorkbook(wb, &quot;basics.xlsx&quot;, overwrite = TRUE)</code></pre>
+</div>
+<div id="between-1-and-4" class="section level1">
+<h1>Between (1) and (4)</h1>
+<p>Many options for further customisation of worksheet contents before saving</p>
+<ul>
+<li>Merging columns and rows</li>
+<li>Adding cell colours</li>
+<li>Changing fonts</li>
+<li>Resizing column widths and row heights</li>
+<li>Conditional formatting</li>
+<li>etc</li>
+<li>etc</li>
+<li>etc</li>
+</ul>
+</div>
+<div id="examples-used-in-practice" class="section level1">
+<h1>Examples used in practice</h1>
+<ol style="list-style-type: decimal">
+<li>Simple tables using ONS/HMD data
+<ul>
+<li>Cell merging</li>
+<li>Number of DPs displayed</li>
+<li>Resizing</li>
+<li>Font formatting</li>
+<li>Border lines</li>
+</ul></li>
+<li>Heatmaps of correlations (HMD)
+<ul>
+<li>Multiple worksheets</li>
+<li>Conditional formatting: values -&gt; colour</li>
+<li>Resized to fit on one page</li>
+</ul></li>
+</ol>
+</div>
+<div id="example-1-simple-tables" class="section level1">
+<h1>Example 1: Simple tables</h1>
+<ul>
+<li>An example in github repo <a href="https://github.com/JonMinton/bayes_factor_slowdown"><code>Bayes_Factor_Slowdown</code></a>
+<ul>
+<li>Specific example <a href="https://github.com/JonMinton/bayes_factor_slowdown/blob/master/markdown/bayes_factor_ons_e0.Rmd#L243-L317">here</a></li>
+<li>Produces <a href="https://github.com/JonMinton/bayes_factor_slowdown/blob/master/bayes_paper/tables/M01_hmd_countries_decade.xlsx">this file</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="example-1-reflections" class="section level1">
+<h1>Example 1: Reflections</h1>
+<ul>
+<li><a href="https://github.com/JonMinton/bayes_factor_slowdown/blob/master/markdown/bayes_factor_ons_e0.Rmd#L248-L252">This function</a> is a bit of a hack</li>
+<li>Could put all tables in a single workbook
+<ul>
+<li>But more likely to forget to ‘close the door’ after opening it</li>
+</ul></li>
+<li>Formatting code quite extensive
+<ul>
+<li>But this reflects genuine complexity in number of specific processes and instructions involved in Excel formatting</li>
+</ul></li>
+</ul>
+</div>
+<div id="example-2-heatmaps" class="section level1">
+<h1>Example 2: Heatmaps</h1>
+<ul>
+<li>From <a href="https://github.com/JonMinton/rising_tide">this github repo</a>
+<ul>
+<li>Specific example <a href="https://github.com/JonMinton/rising_tide/blob/master/analyses.Rmd">within here</a></li>
+<li>What it shows
+<ul>
+<li>Correlation between trends in log mortality at two different individual ages (?!?!)</li>
+<li><strong>‘Tartanplots!’</strong></li>
+</ul></li>
+<li>Motivation: to produce an Excel version of <a href="https://raw.githubusercontent.com/JonMinton/rising_tide/master/figures/heatmap_2011_onwards.png">this kind of heatmap</a>
+<ul>
+<li>To look up values (for commentary)</li>
+<li>To slice through different time periods</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>Version with just a couple of slices
+<ul>
+<li><a href="https://github.com/JonMinton/bayes_factor_slowdown/blob/master/markdown/bayes_factor_ons_e0.Rmd#L248-L252">Code here</a></li>
+<li>Produces <a href="https://github.com/JonMinton/rising_tide/blob/master/tables/blocks_both_main_periods.xlsx">this worksheet</a></li>
+</ul></li>
+<li>Version with many slices (25 year period, 5 year rolling starts)
+<ul>
+<li><a href="https://github.com/JonMinton/rising_tide/blob/master/analyses.Rmd#L1180-L1274">Code here</a></li>
+<li>Produces <a href="https://github.com/JonMinton/rising_tide/blob/master/tables/many_blocks.xlsx">this behemoth</a>!</li>
+</ul></li>
+</ul>
+</div>
+<div id="example-2-reflections" class="section level1">
+<h1>Example 2: Reflections</h1>
+<ul>
+<li>Benefits of automating now stars to pay more clearly for cost of thinking/expressing formatting decisions formally</li>
+<li>Can get lost in/swamped by the data itself!</li>
+<li>Proof of principle that 10s/100s/1000s of worksheets can be produced at once</li>
+</ul>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<ul>
+<li>Strengths
+<ul>
+<li>Fully automated
+<ul>
+<li>Fewer opportunities to introduce errors</li>
+<li>Change the data -&gt; change the excel output</li>
+</ul></li>
+<li>Forces clear thinking about formatting/styling</li>
+<li>No Java dependencies</li>
+<li>Simple save options also available</li>
+</ul></li>
+<li>Limitations/development opportunities
+<ul>
+<li>xlsx expressions focus too much attention on the programmatic cf conceptual
+<ul>
+<li>Dirty hacks (e.g. when merging multiple groups of cells)</li>
+<li>kable -&gt; Excel workbook table converter</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="suggestions" class="section level1">
+<h1>Suggestions</h1>
+<ul>
+<li>Could add more metadata/descriptive data procedurally too
+<ul>
+<li>Options to add hyperlinks etc?</li>
+</ul></li>
+<li><strong>Cost-benefit question</strong>: Cost of thinking &lt; benefits of scaling?</li>
+<li>Some alternatives exist
+<ul>
+<li>Google Sheets?</li>
+<li>Convenience function library to develop?</li>
+</ul></li>
+<li>Preference for Excel workbooks not going any time soon</li>
+<li>This seems worth investing in to meet people with these preferences</li>
+</ul>
 </div>
 
 
